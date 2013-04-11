@@ -56,7 +56,11 @@ function socket_io_page_build(&$page) {
     }
 
     drupal_add_js(array('socket_io' => $settings), 'setting');
-    drupal_add_js($settings['connection_string'] . '/socket.io/socket.io.js');
-    drupal_add_js(drupal_get_path('module', 'socket_io') . '/js/socket.io-drupal.js'); 
+    drupal_add_js($settings['connection_string'] . '/socket.io/socket.io.js', array(
+      'group' => JS_LIBRARY,
+    ));
+    drupal_add_js(drupal_get_path('module', 'socket_io') . '/js/socket.io-drupal.js', array(
+      'group' => JS_LIBRARY,
+    ));
   }
 }
