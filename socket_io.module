@@ -1,0 +1,59 @@
+<?php
+
+define('SOCKET_IO_ADMIN_PATH', 'admin/config/socket_io');
+
+/**
+ * Implements hook_menu().
+ */
+function socket_io_menu() {
+  $items[SOCKET_IO_ADMIN_PATH] = array(
+    'title' => t('Configure Socket.io'),
+    'description' => t('Control connection settings'),
+    'access arguments' => array('administer socket_io'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('socket_io_settings_form'),
+    'file' => 'socket_io.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function socket_io_permission() {
+  return array(
+    'administer socket_io' => array(
+      'title' => t('Administer Socket.io'),
+      'description' => t('Configure the settings for the Socket.io instance'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function socket_io_preprocess_page(&$vars) {
+  if (drupal_match_path(current_path(), 
+    variable_get('socket_io_page_filters', '')) == variable_get('socket_io_exclude', '1')) {
+
+    $settings = array(
+      'host' => variable_get('socket_io_host', FALSE),
+      'port' => variable_get('socket_io_port', 80),
+    );
+    $settings['connection_string'] = 'http://' . $settings['host'] . ':' . $settings['port'];
+
+    if (!$settings['host'] && $user->uid == 1 && $_GET['q'] !== SOCKET_IO_ADMIN_PATH) {
+      drupal_set_message(t('Please configure the socket_io !settings', array(
+        '!settings' => l(t('settings'), SOCKET_IO_ADMIN_PATH),
+      )), 'warning');
+      
+      return;
+    }
+
+    drupal_add_js(array('socket_io' => $settings), 'setting');
+    drupal_add_js($settings['connection_string'] . '/socket.io/socket.io.js');
+    drupal_add_js(drupal_get_path('module', 'socket_io') . '/js/socket.io-drupal.js'); 
+  }
+}

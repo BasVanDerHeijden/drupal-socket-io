@@ -1,0 +1,3 @@
+name = Socket.io
+description = Provides a connection to a socket.io server
+core = 7.x
