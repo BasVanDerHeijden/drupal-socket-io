@@ -32,9 +32,11 @@ function socket_io_permission() {
 }
 
 /**
- * Implements hook_preprocess_page().
+ * Implements hook_page_build().
+ * @see https://twitter.com/davereid/status/294554866649542657
  */
-function socket_io_preprocess_page(&$vars) {
+function socket_io_page_build(&$page) {
+  global $user;
   if (drupal_match_path(current_path(), 
     variable_get('socket_io_page_filters', '')) == variable_get('socket_io_exclude', '1')) {
 
