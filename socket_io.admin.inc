@@ -5,6 +5,13 @@
  */
 
 function socket_io_settings_form($form, &$form_state) {
+  $form['socket_io_auto_connect'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Automatically connect'),
+    '#description' => t('If checked, the WebSocket connection will be automatically established. If not, you have to connect manually by running Drupal.socket_connect() with an optional callback as the first parameter.'),
+    '#default_value' => variable_get('socket_io_auto_connect', TRUE),
+  );
+
   $form['socket_io_host'] = array(
     '#type' => 'textfield',
     '#title' => t('Host'),

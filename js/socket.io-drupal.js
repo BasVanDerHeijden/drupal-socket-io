@@ -9,14 +9,25 @@
       }
 
       Drupal.io = io;
-      Drupal.socket = Drupal.io.connect(settings.socket_io.connection_string);
-      Drupal.socket.on('connect', function() {
-        Drupal.socket_connected = true;
-      });
 
-      Drupal.socket.on('disconnect', function() {
-        Drupal.socket_connected = false;
-      });
+      Drupal.socket_connect = function(cb) {
+        Drupal.socket = Drupal.io.connect(settings.socket_io.connection_string);
+
+        Drupal.socket.on('connect', function() {
+          Drupal.socket_connected = true;
+          if (typeof cb === 'function') {
+            cb(Drupal.socket);
+          }
+        });  
+
+        Drupal.socket.on('disconnect', function() {
+          Drupal.socket_connected = false;
+        });
+      };
+
+      if (settings.socket_io.auto_connect) {
+        Drupal.socket_connect();
+      }
     }
   };
 })(jQuery);

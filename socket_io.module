@@ -41,6 +41,7 @@ function socket_io_preprocess_page(&$vars) {
     $settings = array(
       'host' => variable_get('socket_io_host', FALSE),
       'port' => variable_get('socket_io_port', 80),
+      'auto_connect' => variable_get('socket_io_auto_connect', TRUE),
     );
     $settings['connection_string'] = 'http://' . $settings['host'] . ':' . $settings['port'];
 
