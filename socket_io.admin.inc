@@ -15,7 +15,7 @@ function socket_io_settings_form($form, &$form_state) {
   $form['socket_io_host'] = array(
     '#type' => 'textfield',
     '#title' => t('Host'),
-    '#description' => t('Specify the host running the socket.io instance.'),
+    '#description' => t('Specify the host running the socket.io instance (Do not include http://).'),
     '#default_value' => variable_get('socket_io_host', ''),
   );
 
