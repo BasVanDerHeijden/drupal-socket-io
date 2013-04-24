@@ -39,28 +39,37 @@ function socket_io_page_build(&$page) {
   global $user;
   if (drupal_match_path(current_path(), 
     variable_get('socket_io_page_filters', '')) == variable_get('socket_io_exclude', '1')) {
-
-    $settings = array(
-      'host' => variable_get('socket_io_host', FALSE),
-      'port' => variable_get('socket_io_port', 80),
-      'auto_connect' => variable_get('socket_io_auto_connect', TRUE),
-    );
-    $settings['connection_string'] = 'http://' . $settings['host'] . ':' . $settings['port'];
-
-    if (!$settings['host'] && $user->uid == 1 && $_GET['q'] !== SOCKET_IO_ADMIN_PATH) {
-      drupal_set_message(t('Please configure the socket_io !settings', array(
-        '!settings' => l(t('settings'), SOCKET_IO_ADMIN_PATH),
-      )), 'warning');
-      
-      return;
-    }
-
-    drupal_add_js(array('socket_io' => $settings), 'setting');
-    drupal_add_js($settings['connection_string'] . '/socket.io/socket.io.js', array(
-      'group' => JS_LIBRARY,
-    ));
-    drupal_add_js(drupal_get_path('module', 'socket_io') . '/js/socket.io-drupal.js', array(
-      'group' => JS_LIBRARY,
-    ));
+    socket_io_add();
   }
+}
+
+/**
+ * API Function to manually start the Socket IO Connection on a page.
+ * @return boolean $succcess
+ */
+function socket_io_add() {
+  $settings = array(
+    'host' => variable_get('socket_io_host', FALSE),
+    'port' => variable_get('socket_io_port', 80),
+    'auto_connect' => variable_get('socket_io_auto_connect', TRUE),
+  );
+  $settings['connection_string'] = 'http://' . $settings['host'] . ':' . $settings['port'];
+
+  if (!$settings['host'] && $user->uid == 1 && $_GET['q'] !== SOCKET_IO_ADMIN_PATH) {
+    drupal_set_message(t('Please configure the socket_io !settings', array(
+      '!settings' => l(t('settings'), SOCKET_IO_ADMIN_PATH),
+    )), 'warning');
+    
+    return FALSE;
+  }
+
+  drupal_add_js(array('socket_io' => $settings), 'setting');
+  drupal_add_js($settings['connection_string'] . '/socket.io/socket.io.js', array(
+    'group' => JS_LIBRARY,
+  ));
+  drupal_add_js(drupal_get_path('module', 'socket_io') . '/js/socket.io-drupal.js', array(
+    'group' => JS_LIBRARY,
+  ));
+
+  return TRUE;
 }
